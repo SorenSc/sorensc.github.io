@@ -12,7 +12,17 @@
   </head>
   <body>
 
-    <div id="content">
+    <div id="news-container" class="container">
+      <div id="news1" class="row">
+        <div class="card text-white bg-dark mb-3 text-center col">
+          <div id="card-head" class="card-header font-italic"></div>
+          <div class="card-body">
+            <h5 id="card-title" class="card-title"></h5>
+            <p id="card-content" class="card-text"></p>
+            <p id="card_end" class="card-text font-italic"></p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -22,19 +32,97 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
     <script>
-    $("document").ready(function(){
-      $.getJSON( "news.json", function( data ) {
-        var items = [];
-        $.each( data, function( key, val ) {
-          items.push( "<li id='" + key + "'>" + val + "</li>" );
+
+    var news = (function () {
+
+      var getNewsContent = function() {
+        getContent();
+        prepareDOM();
+      };
+
+      var getContent = function() {
+        $.ajax({
+          url: "news.json",
+          dataType: "json",
+          type: "get",
+          cache: false
+        }).done( function(data) {
+          newsData = data;
+          loadContentIntoDOM(data);
         });
-       
-        $( "<ul/>", {
-          "class": "my-new-list",
-          html: items.join( "" )
-        }).appendTo( "body" );
-      });
-    })
+      };
+
+      var prepareDOM = function() {
+
+      };
+
+      var loadContentIntoDOM = function(data){
+        console.log(data);
+      }
+
+      return {
+        newsData: newsData,
+        getNewsContent: getNewsContent
+      };
+
+    })();
+
+    $(document).ready(function(){
+      console.log(news.newsData);
+      news.getNewsContent();
+      console.log(news.newsData);
+    });
+
+    // var news = {
+      
+    //   displayNews: function() {
+    //     var data = this.getNewsContent();
+
+    //     console.log(data);
+
+    //     // $(data.news).each(function(index, content){
+    //     //   $("#card-head").text(content.date);
+    //     //   $("#card-title").text(content.title);
+    //     //   $("#card-content").text(content.content);
+    //     //   $("#card_end").text("Gruß, ".concat(content.author));
+    //     // });
+
+    //   },
+
+    //   getTest: function() {
+    //     return "Test";
+    //   },
+
+    //   getNewsContent: function() {
+    //     $.ajax({
+    //       url: "news.json",
+    //       dataType: "json",
+    //       type: "get",
+    //       cache: false,
+    //       success: function(data) {
+    //         return "Test";
+    //       }
+    //     });
+    //   }
+    // };
+
+
+
+    //       var $newClassContainer = $("#news1").clone();
+    //       $newClassContainer.find("#card-head").attr("id", "test");
+    //       $("#news-container").append($newClassContainer);
+    //       $("#test").text("Test");
+    //     }
+
+    //   // Copy div with class row 
+    //   // Give it a new id
+    //   // insert it below container
+
+    //   });
+    //   }
+
+    // Using an object literal for a jQuery feature
+
     </script>
   </body>
 </html>
