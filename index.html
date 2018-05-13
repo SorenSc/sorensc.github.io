@@ -12,8 +12,8 @@
   </head>
   <body>
 
-    <div id="news-container" class="container">
-      <div id="news1" class="row">
+    <div id="news-container" class="container invisible">
+      <div id="news0" class="row">
         <div class="card text-white bg-dark mb-3 text-center col">
           <div id="card-head" class="card-header font-italic"></div>
           <div class="card-body">
@@ -35,9 +35,14 @@
 
     var news = (function () {
 
+      var newsData;
+      var numberOfNews = 3;
+
       var getNewsContent = function() {
-        getContent();
-        prepareDOM();
+        if(numberOfNews > 0){
+          getContent();
+          prepareDOM();
+        }
       };
 
       var getContent = function() {
@@ -53,11 +58,26 @@
       };
 
       var prepareDOM = function() {
-
+        for (i = 1; i < numberOfNews; i++) {
+          var currentNewsId = "news".concat(i.toString());
+          var clonedElement = $("#news0").clone();
+          clonedElement.attr("id", currentNewsId);
+          $("#news-container").append(clonedElement);
+        }
+        $("#news-container").removeClass("invisible");
       };
 
       var loadContentIntoDOM = function(data){
-        console.log(data);
+        var currentId = 0;
+        $(data.news).each(function(index, content){
+          var currentNewsId = "#news".concat(currentId.toString());
+          $(currentNewsId + " #card-head").text(content.date);
+          $(currentNewsId + " #card-title").text(content.title);
+          $(currentNewsId + " #card-content").text(content.content);
+          $(currentNewsId + " #card-end").text(content.author);
+          currentId++;
+        });
+
       }
 
       return {
@@ -68,9 +88,7 @@
     })();
 
     $(document).ready(function(){
-      console.log(news.newsData);
       news.getNewsContent();
-      console.log(news.newsData);
     });
 
     // var news = {

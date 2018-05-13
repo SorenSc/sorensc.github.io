@@ -11,7 +11,12 @@
 			"author" : "Sören",
 			"title" : "Tools - Ziele",
 			"content" : "Gestern saß ich im Bus, sodass ich mir Gedanken über die Tools machen konnte, die ich im Rahmen dieser Projekte besser erlernen möchte. Sie sind: Bootstrap, JQuery und D3. Bootstrap werde ich für das Aussehen nutzen, JQuery um Funktionalität zu ergänzen und D3 um eine spannende Visualisierung für die verschiedenen Spiele zu ergänzen."
+		},
+		{
+			"date" : "13. Mai 2018",
+			"author" : "Sören",
+			"title" : "JSON für die Inhalte",
+			"content" : "Nun nutzt die Seite eine JSON-Datei, um die Inhalte zu füllen. JQuery unterstützt einige einfach zu nutzende Funktionen, mit deren Hilfe das Lesen des JSON-Formats unproblematisch ist. Vermutlich werde ich diese Technik auch nutzen um die Spiele in die Seite zu laden."
 		}
 	]
 }
-
