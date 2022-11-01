@@ -1,146 +1,393 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>SorenSc</title>
-  </head>
-  <body>
+    <!-- Latex formulas    -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <div id="news-container" class="container invisible">
-      <div id="news0" class="row">
-        <div class="card text-white bg-dark mb-3 text-center col">
-          <div id="card-head" class="card-header font-italic"></div>
-          <div class="card-body">
-            <h5 id="card-title" class="card-title"></h5>
-            <p id="card-content" class="card-text"></p>
-            <p id="card_end" class="card-text font-italic"></p>
-          </div>
+    <title>RL-Debugger</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2 text-center my-auto">
+            <button type="button" id="btn-previous" class="btn btn-secondary">Previous</button>
         </div>
-      </div>
+        <div class="col-md-8">
+            <h1 id="txt-time" class="text-center">2016-01-16 08:00</h1>
+        </div>
+        <div class="col-md-2 text-center my-auto">
+            <button type="button" id="btn-next" class="btn btn-secondary">Next</button>
+        </div>
     </div>
+</div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-    <script>
+<hr>
 
-    var news = (function () {
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 text-center my-auto">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="check-indices" checked>
+                <label class="form-check-label" for="check-indices">Indices</label>
+            </div>
+        </div>
+        <div class="col-md-3 text-center my-auto">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="check-arrows" checked>
+                <label class="form-check-label" for="check-arrows">Arrow-Based Explanations</label>
+            </div>
+        </div>
+        <div class="col-md-3 text-center my-auto">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="check-shap" checked>
+                <label class="form-check-label" for="check-shap">SHAP</label>
+            </div>
+        </div>
+        <div class="col-md-3 text-center my-auto">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="check-sarfa" checked>
+                <label class="form-check-label" for="check-sarfa">SARFA</label>
+            </div>
+        </div>
+    </div>
+</div>
 
-      var newsData;
-      var numberOfNews = 3;
+<hr>
 
-      var getNewsContent = function() {
-        if(numberOfNews > 0){
-          getContent();
-          prepareDOM();
-        }
-      };
+<div class="container">
+    <h3 class="text-center">Preliminaries</h3>
+    <p class="text-center">
+        \(r\) is the number of requests and \(t\) the number of taxis.
+    </p>
+</div>
 
-      var getContent = function() {
-        $.ajax({
-          url: "news.json",
-          dataType: "json",
-          type: "get",
-          cache: false
-        }).done( function(data) {
-          newsData = data;
-          loadContentIntoDOM(data);
-        });
-      };
+<hr>
 
-      var prepareDOM = function() {
-        for (i = 1; i < numberOfNews; i++) {
-          var currentNewsId = "news".concat(i.toString());
-          var clonedElement = $("#news0").clone();
-          clonedElement.attr("id", currentNewsId);
-          $("#news-container").append(clonedElement);
-        }
-        $("#news-container").removeClass("invisible");
-      };
+<div class="container">
+    <h3 class="text-center">State</h3>
+    <p class="text-center">
+        \(\hat{r}\) and \(t\) are the state, \(r\) and \(\hat{r} - r\) are shown for debugging purposes.
+    </p>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-state-r-head" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\hat{r}\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-state-t" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[t\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-state-r" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[r\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-state-r-hat-minus-r" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\hat{r} - r\]</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-      var loadContentIntoDOM = function(data){
-        var currentId = 0;
-        $(data.news).each(function(index, content){
-          var currentNewsId = "#news".concat(currentId.toString());
-          $(currentNewsId + " #card-head").text(content.date);
-          $(currentNewsId + " #card-title").text(content.title);
-          $(currentNewsId + " #card-content").text(content.content);
-          $(currentNewsId + " #card-end").text(content.author);
-          currentId++;
-        });
 
-      }
+<div class="container" id="div-indices">
+    <h3 class="text-center">Indices</h3>
+    <p class="text-center">
+        The idea of an index is to merge \(\hat{r}\) and \(t\) to reduce the cognitive load for the explainee.
+    </p>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-index-request-taxi" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\frac{\hat{r}}{t}\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-index-weighted-request-taxi-d5" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\hat{r} \left( \frac{a}{t} + \frac{1 - a}{\bar{r}} \right) \quad \text{for } a = 0.5\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-index-weighted-request-taxi-d75" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\hat{r} \left( \frac{a}{t} + \frac{1 - a}{\bar{r}} \right) \quad \text{for } a = 0.75\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-index-reward" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>
+                    \[
+                        \begin{cases}
+                            20 & \text{for } \hat{r} - t \geq 2 \\
+                            10 & \text{for } \hat{r} - t = 1 \\
+                            10 (\hat{r}/t) & \text{for } \hat{r} - t \leq 0 \text{ and } \hat{r} > 0 \\
+                            -0.96 & \text{for } \hat{r} = 0 \\
+                        \end{cases}
+                    \]
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-      return {
-        newsData: newsData,
-        getNewsContent: getNewsContent
-      };
 
-    })();
+<hr>
 
-    $(document).ready(function(){
-      news.getNewsContent();
+<div class="container" id="div-arrows">
+    <h3 class="text-center">Arrow-Based Explanations</h3>
+    <p class="text-center">
+        Arrow direction is determined by \(\arg\max_{a} Q(s, a)\) per corresponding location in the city.
+        Certainty is estimated via the displayed formulas.
+        \(Q(s, a)\) is shown to debug.
+    </p>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-arrow-min" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\frac{\max Q(s, a) - \min Q(s, a)}{\max Q(s, a)}\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-arrow-second-highest" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\frac{\max Q(s, a) - second \max Q(s, a)}{\max Q(s, a)}\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-q-value" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[Q(s, a)\]</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="container" id="div-shap">
+    <h3 class="text-center">Baseline Explanation SHAP</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-shap-r-hat-all" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\(\phi_{\hat{r}}\) via SHAP</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-shap-t-all" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\(\phi_{t}\) via SHAP</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-shap-r-hat-selected" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\(\phi_{\hat{r}, a}\) via SHAP</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-shap-t-selected" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\(\phi_{t, a}\) via SHAP</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container" id="div-sarfa">
+    <h3 class="text-center">Baseline Explanation SARFA</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-sarfa-r-hat" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\(S_{\hat{r}}\) via SARFA</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-sarfa-t" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\(S_{t}\) via SARFA</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="text-center">&#x1F609;</div>
+
+<hr>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script>
+    var t = 1200
+    var base_ref = "https://gitlab.tu-clausthal.de/ss16/rl-debugger/-/raw/main/src/"
+
+    var time_dict = {
+        1200: '2015-01-09 08:00',
+        1201: '2015-01-09 08:10',
+        1202: '2015-01-09 08:20',
+        1203: '2015-01-09 08:30',
+        1204: '2015-01-09 08:40',
+        1205: '2015-01-09 08:50',
+        1206: '2015-01-09 09:00',
+        1207: '2015-01-09 09:10',
+        1208: '2015-01-09 09:20',
+        1209: '2015-01-09 09:30',
+        1210: '2015-01-09 09:40',
+        1211: '2015-01-09 09:50',
+        1212: '2015-01-09 10:00',
+        1213: '2015-01-09 10:10',
+        1214: '2015-01-09 10:20',
+        1215: '2015-01-09 10:30',
+        1216: '2015-01-09 10:40',
+        1217: '2015-01-09 10:50',
+        1218: '2015-01-09 11:00',
+        1219: '2015-01-09 11:10',
+        1220: '2015-01-09 11:20',
+        1221: '2015-01-09 11:30',
+        1222: '2015-01-09 11:40',
+        1223: '2015-01-09 11:50',
+        1224: '2015-01-09 12:00',
+        1225: '2015-01-09 12:10',
+        1226: '2015-01-09 12:20',
+        1227: '2015-01-09 12:30',
+        1228: '2015-01-09 12:40',
+        1229: '2015-01-09 12:50',
+        1230: '2015-01-09 13:00',
+        1231: '2015-01-09 13:10',
+        1232: '2015-01-09 13:20',
+        1233: '2015-01-09 13:30',
+        1234: '2015-01-09 13:40',
+        1235: '2015-01-09 13:50',
+        1236: '2015-01-09 14:00',
+        1237: '2015-01-09 14:10',
+        1238: '2015-01-09 14:20',
+        1239: '2015-01-09 14:30',
+        1240: '2015-01-09 14:40',
+        1241: '2015-01-09 14:50',
+        1242: '2015-01-09 15:00',
+        1243: '2015-01-09 15:10',
+        1244: '2015-01-09 15:20',
+        1245: '2015-01-09 15:30',
+        1246: '2015-01-09 15:40',
+        1247: '2015-01-09 15:50',
+        1248: '2015-01-09 16:00',
+        1249: '2015-01-09 16:10',
+        1250: '2015-01-09 16:20',
+        1251: '2015-01-09 16:30',
+        1252: '2015-01-09 16:40',
+    }
+
+    // var time_steps = [];
+    // for (var key in time_dict) {
+    //     time_steps.push(parseInt(key));
+    // }
+
+    function update_content() {
+        $( "#txt-time" ).text(time_dict[t] + ' - ' + t);
+        $( "#img-state-r-head" ).attr("src", base_ref + 'state_r_hat' + '/' + t + ".PNG");
+        $( "#img-state-t" ).attr("src", base_ref + 'state_t' + '/' + t + ".PNG");
+        $( "#img-state-r" ).attr("src", base_ref + 'state_r' + '/' + t + ".png");
+        $( "#img-state-r-hat-minus-r" ).attr("src", base_ref + 'state_r_hat_minus_r' + '/' + t + ".png");
+        $( "#img-index-request-taxi" ).attr("src", base_ref + 'index_request_taxi' + '/' + t + ".PNG");
+        $( "#img-index-weighted-request-taxi-d5" ).attr("src", base_ref + 'index_weighted_request_taxi_d5' + '/' + t + ".PNG");
+        $( "#img-index-weighted-request-taxi-d75" ).attr("src", base_ref + 'index_weighted_request_taxi_d75' + '/' + t + ".PNG");
+        $( "#img-index-reward" ).attr("src", base_ref + 'index_reward' + '/' + t + ".PNG");
+        $( "#img-arrow-min" ).attr("src", base_ref + 'arrow_min' + '/' + t + ".PNG");
+        $( "#img-arrow-second-highest" ).attr("src", base_ref + 'arrow_second_highest' + '/' + t + ".PNG");
+        $( "#img-q-value" ).attr("src", base_ref + 'q_value' + '/' + t + ".PNG");
+        $( "#img-shap-r-hat-all" ).attr("src", base_ref + 'shap_r_hat_all' + '/' + t + ".PNG");
+        $( "#img-shap-t-all" ).attr("src", base_ref + 'shap_t_all' + '/' + t + ".PNG");
+        $( "#img-shap-r-hat-selected" ).attr("src", base_ref + 'shap_r_hat_selected' + '/' + t + ".PNG");
+        $( "#img-shap-t-selected" ).attr("src", base_ref + 'shap_t_selected' + '/' + t + ".PNG");
+        $( "#img-sarfa-r-hat" ).attr("src", base_ref + 'sarfa_r_hat' + '/' + t + ".PNG");
+        $( "#img-sarfa-t" ).attr("src", base_ref + 'sarfa_t' + '/' + t + ".PNG");
+    }
+
+    update_content()
+
+    $( "#btn-previous" ).click(function() {
+        t -= 1;
+        update_content();
     });
 
-    // var news = {
-      
-    //   displayNews: function() {
-    //     var data = this.getNewsContent();
+    $( "#btn-next" ).click(function() {
+        t += 1;
+        update_content();
+    });
 
-    //     console.log(data);
+    $(document).on('change', '#check-indices', function() {
+        if ($(this).is(":checked")){
+            $( "#div-indices" ).show();
+        }
+        else {
+            $( "#div-indices" ).hide();
+        }
+    });
 
-    //     // $(data.news).each(function(index, content){
-    //     //   $("#card-head").text(content.date);
-    //     //   $("#card-title").text(content.title);
-    //     //   $("#card-content").text(content.content);
-    //     //   $("#card_end").text("Gruß, ".concat(content.author));
-    //     // });
+    $(document).on('change', '#check-arrows', function() {
+        if ($(this).is(":checked")){
+            $( "#div-arrows" ).show();
+        }
+        else {
+            $( "#div-arrows" ).hide();
+        }
+    });
 
-    //   },
+    $(document).on('change', '#check-shap', function() {
+        if ($(this).is(":checked")){
+            $( "#div-shap" ).show();
+        }
+        else {
+            $( "#div-shap" ).hide();
+        }
+    });
 
-    //   getTest: function() {
-    //     return "Test";
-    //   },
-
-    //   getNewsContent: function() {
-    //     $.ajax({
-    //       url: "news.json",
-    //       dataType: "json",
-    //       type: "get",
-    //       cache: false,
-    //       success: function(data) {
-    //         return "Test";
-    //       }
-    //     });
-    //   }
-    // };
-
+    $(document).on('change', '#check-sarfa', function() {
+        if ($(this).is(":checked")){
+            $( "#div-sarfa" ).show();
+        }
+        else {
+            $( "#div-sarfa" ).hide();
+        }
+    });
 
 
-    //       var $newClassContainer = $("#news1").clone();
-    //       $newClassContainer.find("#card-head").attr("id", "test");
-    //       $("#news-container").append($newClassContainer);
-    //       $("#test").text("Test");
-    //     }
+</script>
 
-    //   // Copy div with class row 
-    //   // Give it a new id
-    //   // insert it below container
-
-    //   });
-    //   }
-
-    // Using an object literal for a jQuery feature
-
-    </script>
-  </body>
+</body>
 </html>
