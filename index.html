@@ -34,25 +34,31 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-3 text-center my-auto">
+        <div class="col-md-2 text-center my-auto">
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="check-indices" checked>
                 <label class="form-check-label" for="check-indices">Indices</label>
             </div>
         </div>
-        <div class="col-md-3 text-center my-auto">
+        <div class="col-md-2 text-center my-auto">
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="check-arrows" checked>
                 <label class="form-check-label" for="check-arrows">Arrow-Based Explanations</label>
             </div>
         </div>
-        <div class="col-md-3 text-center my-auto">
+        <div class="col-md-2 text-center my-auto">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="check-q-values" checked>
+                <label class="form-check-label" for="check-arrows">Q-values</label>
+            </div>
+        </div>
+        <div class="col-md-2 text-center my-auto">
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="check-shap" checked>
                 <label class="form-check-label" for="check-shap">SHAP</label>
             </div>
         </div>
-        <div class="col-md-3 text-center my-auto">
+        <div class="col-md-2 text-center my-auto">
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="check-sarfa" checked>
                 <label class="form-check-label" for="check-sarfa">SARFA</label>
@@ -66,7 +72,10 @@
 <div class="container">
     <h3 class="text-center">Preliminaries</h3>
     <p class="text-center">
-        \(r\) is the number of requests and \(t\) the number of taxis.
+        \(r\) is the number of requests and \(t\) the number of taxis. \(s\) represents the state consisting of the
+        estimated number of requests \(\hat{r}\), \(t\), and the location of the taxi visualized as a rectangle.
+        An action of the agent is \(a\) and the action proposed by the agent or via its policy is visualized as a blue
+        rectangle.
     </p>
 </div>
 
@@ -154,35 +163,66 @@
 <div class="container" id="div-arrows">
     <h3 class="text-center">Arrow-Based Explanations</h3>
     <p class="text-center">
-        Arrow direction is determined by \(\arg\max_{a} Q(s, a)\) per corresponding location in the city.
-        Certainty is estimated via the displayed formulas.
-        \(Q(s, a)\) is shown to debug.
+        Arrow direction is determined by the first formula and the certainty - visualized as color - via the second
+        formula.
     </p>
     <div class="row">
         <div class="col-md-3">
             <div class="row justify-content-center">
                 <div><img id="img-arrow-min" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\arg\max_{a} Q(s, a)\]</div>
                 <div>\[\frac{\max Q(s, a) - \min Q(s, a)}{\max Q(s, a)}\]</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="row justify-content-center">
                 <div><img id="img-arrow-second-highest" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\arg\max_{a} Q(s, a)\]</div>
                 <div>\[\frac{\max Q(s, a) - second \max Q(s, a)}{\max Q(s, a)}\]</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="row justify-content-center">
+                <div><img id="img-smoothed-arrows" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\[\frac{Q(s,a') - min_{a}Q(s, a)}{\sum_{i=1}^{25} Q(s,a_{i}) - min_{a}Q(s, a)}\]</div>
+                <div>\[\frac{\max Q(s, a) - \min Q(s, a)}{\max Q(s, a)}\]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+</div>
+
+
+<hr>
+
+<div class="container" id="div-q-values">
+    <h3 class="text-center">Q-values</h3>
+    <p class="text-center">
+        All Q-values for each possible location are shown for debugging purposes.
+    </p>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-q-value" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>Q-value</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="row justify-content-center">
-                <div><img id="img-q-value" src="" class="img-fluid" alt="Responsive image"></div>
-                <div>\[Q(s, a)\]</div>
+                <div><img id="img-q-value-overall-norm" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>Normed overall</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-q-value-state-norm" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>Normed via state</div>
             </div>
         </div>
     </div>
 </div>
+
 
 <hr>
 
@@ -329,7 +369,10 @@
         $( "#img-index-reward" ).attr("src", base_ref + 'index_reward' + '/' + t + ".PNG");
         $( "#img-arrow-min" ).attr("src", base_ref + 'arrow_min' + '/' + t + ".PNG");
         $( "#img-arrow-second-highest" ).attr("src", base_ref + 'arrow_second_highest' + '/' + t + ".PNG");
+        $( "#img-smoothed-arrows" ).attr("src", base_ref + 'smoothed_arrows' + '/' + t + ".PNG");
         $( "#img-q-value" ).attr("src", base_ref + 'q_value' + '/' + t + ".PNG");
+        $( "#img-q-value-overall-norm" ).attr("src", base_ref + 'q_value_overall_norm' + '/' + t + ".PNG");
+        $( "#img-q-value-state-norm" ).attr("src", base_ref + 'q_value_state_norm' + '/' + t + ".PNG");
         $( "#img-shap-r-hat-all" ).attr("src", base_ref + 'shap_r_hat_all' + '/' + t + ".PNG");
         $( "#img-shap-t-all" ).attr("src", base_ref + 'shap_t_all' + '/' + t + ".PNG");
         $( "#img-shap-r-hat-selected" ).attr("src", base_ref + 'shap_r_hat_selected' + '/' + t + ".PNG");
@@ -365,6 +408,15 @@
         }
         else {
             $( "#div-arrows" ).hide();
+        }
+    });
+
+    $(document).on('change', '#check-q-values', function() {
+        if ($(this).is(":checked")){
+            $( "#div-q-values" ).show();
+        }
+        else {
+            $( "#div-q-values" ).hide();
         }
     });
 
