@@ -64,6 +64,12 @@
                 <label class="form-check-label" for="check-sarfa">SARFA</label>
             </div>
         </div>
+        <div class="col-md-2 text-center my-auto">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="check-lime" checked>
+                <label class="form-check-label" for="check-lime">LIME</label>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -256,6 +262,8 @@
     </div>
 </div>
 
+<hr>
+
 
 <div class="container" id="div-sarfa">
     <h3 class="text-center">Baseline Explanation SARFA</h3>
@@ -270,6 +278,31 @@
             <div class="row justify-content-center">
                 <div><img id="img-sarfa-t" src="" class="img-fluid" alt="Responsive image"></div>
                 <div>\(S_{t}\) via SARFA</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+</div>
+
+<hr>
+
+
+<div class="container" id="div-lime">
+    <h3 class="text-center">Baseline Explanation LIME</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-lime-r-hat" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\(e_{\hat{r}, a}\) via LIME Tabular</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row justify-content-center">
+                <div><img id="img-lime-t" src="" class="img-fluid" alt="Responsive image"></div>
+                <div>\(e_{\hat{t}, a}\) via LIME Tabular</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -379,6 +412,8 @@
         $( "#img-shap-t-selected" ).attr("src", base_ref + 'shap_t_selected' + '/' + t + ".PNG");
         $( "#img-sarfa-r-hat" ).attr("src", base_ref + 'sarfa_r_hat' + '/' + t + ".PNG");
         $( "#img-sarfa-t" ).attr("src", base_ref + 'sarfa_t' + '/' + t + ".PNG");
+        $( "#img-lime-r-hat" ).attr("src", base_ref + 'lime_r_hat' + '/' + t + ".PNG");
+        $( "#img-lime-t" ).attr("src", base_ref + 'lime_t' + '/' + t + ".PNG");
     }
 
     update_content()
@@ -435,6 +470,15 @@
         }
         else {
             $( "#div-sarfa" ).hide();
+        }
+    });
+
+    $(document).on('change', '#check-lime', function() {
+        if ($(this).is(":checked")){
+            $( "#div-lime" ).show();
+        }
+        else {
+            $( "#div-lime" ).hide();
         }
     });
 
